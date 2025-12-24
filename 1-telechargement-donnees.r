@@ -25,9 +25,19 @@ fs::dir_create(d)
 #
 # https://www.data.gouv.fr/datasets/proposition-de-contours-des-bureaux-de-vote/
 
+# GeoJSON paths (for reference)
+# u <- fs::path("https://www.data.gouv.fr/api/1/datasets/r/",
+#               "f98165a7-7c37-4705-a181-bcfc943edc73")
+# f <- fs::path(d, "contours-france-entiere-latest-v2.geojson")
+#
+# if (!fs::file_exists(f)) {
+#   download.file(u, f, mode = "wb", quiet = FALSE)
+# }
+
+# PMTiles (more compact)
 u <- fs::path("https://www.data.gouv.fr/api/1/datasets/r/",
-              "f98165a7-7c37-4705-a181-bcfc943edc73")
-f <- fs::path(d, "contours-france-entiere-latest-v2.geojson")
+              "53b31b93-82bf-4859-ada9-d00b91952f95")
+f <- fs::path(d, "reu-france-entiere-2022-06-01-v2.pmtiles")
 
 if (!fs::file_exists(f)) {
   download.file(u, f, mode = "wb", quiet = FALSE)

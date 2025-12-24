@@ -36,7 +36,14 @@ fs::dir_create(s)
 
 # contours BV -------------------------------------------------------------
 
-bv_fdc <- "donnees/contours-france-entiere-latest-v2.geojson" %>%
+# GeoJSON paths (for reference)
+# bv_fdc <- fs::path(d, "contours-france-entiere-latest-v2.geojson") %>%
+#   sf::st_read() %>%
+#   # Lille: subset from 68806 to 126 features
+#   dplyr::filter(codeCommune %in% code_insee_cible)
+
+# PMTiles (more compact)
+bv_fdc <- fs::path(d, "reu-france-entiere-2022-06-01-v2.pmtiles") %>%
   sf::st_read() %>%
   # Lille: subset from 68806 to 126 features
   dplyr::filter(codeCommune %in% code_insee_cible)
