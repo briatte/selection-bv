@@ -56,6 +56,7 @@ All from CRAN except noted otherwise:
 - `archive` (to deal with `.7z`)
 - `factoextra`
 - `FactoMineR`
+- `patchwork`
 - `remotes` (to install [`sfReapportion`][sfReapportion] from GitHub)
 - `sf`
 - [`sfReapportion`][sfReapportion] (from GitHub)
