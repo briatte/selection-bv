@@ -22,27 +22,23 @@ library(tidyverse)
 # résultats électoraux
 base_elec <- readr::read_rds("sorties/Base-Lille-elec.rds") %>%
   # suppression du bureau 901 (prisonniers)
-  dplyr::filter(!BV %in% "59350_0901")
-# row.names(base_elec)<-base_elec$BV
+  dplyr::filter(!BV %in% "59350_0901") %>%
+  # requis pour que {FactoMineR} identifie les parangons
+  as.data.frame()
+row.names(base_elec) <- base_elec$BV
 
 # variables Insee
 base_soc <- readr::read_rds("sorties/Base-Lille-soc.rds") %>%
   # suppression du bureau 901 (prisonniers)
-  dplyr::filter(!codeBureauVote %in% "59350_0901")
-# row.names(base_soc)<-base_soc$codeBureauVote
+  dplyr::filter(!codeBureauVote %in% "59350_0901") %>%
+  # requis pour que {FactoMineR} identifie les parangons
+  as.data.frame()
+row.names(base_soc) <- base_soc$codeBureauVote
 
 # base combinée
 base <- readr::read_rds("sorties/Base-Lille-finale.rds") %>%
   # suppression du bureau 901 (prisonniers)
   dplyr::filter(!BV %in% "59350_0901")
-
-#### II. Tirage des bureaux de vote
-
-### I.1 Classification des bureaux
-
-## Recodages
-# row.names(base)<-base$BV
-
 
 # ACP et classification à partir des variables socioéconomiques -----------
 
@@ -66,12 +62,9 @@ cahsd <- FactoMineR::HCPC(acpsd, metric = "euclidean", method = "ward",
                           graph = FALSE)
 
 # description de la CAH
-FactoMineR::catdes(cahsd$data.clust, num.var = 28) %>%
-  str()
-
 FactoMineR::catdes(cahsd$data.clust, num.var = 28)$quanti %>%
   lapply(round, 2) %>%
-  lapply(function(x) x[ x[, 1] > 5, 1:4])
+  lapply(function(x) x[ 1:7, 1:4])
 
 # récupération de la variable de classe
 base <- tibble(BV = base_soc$codeBureauVote,
@@ -88,7 +81,7 @@ dplyr::count(base, classe_sd) %>%
 acpv <- select(base_elec, -BV, -starts_with("Inscrits")) %>%
   FactoMineR::PCA(graph = FALSE)
 
-# Métriques de l'ACP
+# métriques de l'ACP
 head(acpv$eig)
 head(acpv$var$coord)
 
@@ -100,11 +93,12 @@ factoextra::fviz_pca_var(acpv, repel = TRUE) +
 ggsave("sorties/Exemple - ACP Votes Lille MINE.pdf", width = 10, height = 10)
 
 # CAH
-cahv<-FactoMineR::HCPC(acpv,metric="euclidean",method="ward",graph =F)
-# Description de la CAH
-catdes(cahv$data.clust, num.var = 17)$quanti %>%
+cahv <- FactoMineR::HCPC(acpv, metric = "euclidean", method = "ward",
+                         graph = FALSE)
+# description de la CAH
+FactoMineR::catdes(cahv$data.clust, num.var = 17)$quanti %>%
   lapply(round, 2) %>%
-  lapply(function(x) x[ x[, 1] > 5, 1:4])
+  lapply(function(x) x[ 1:7, 1:4])
 
 # récupération de la variable de classe
 base <- tibble(BV = base_elec$BV,
@@ -115,19 +109,26 @@ base <- tibble(BV = base_elec$BV,
 dplyr::count(base, classe_sd) %>%
   dplyr::mutate(pct = 100 * n / sum(n))
 
-### I.2 Sélection des bureaux
+# sélection des bureaux ---------------------------------------------------
 
-## Croisement des deux classifications
-table(base$classe_sd,base$classe_v)
+# croisement des deux classifications
+with(base, table(classe_sd, classe_v))
 
-## Examen des parangons de chaque classe
+# examen des parangons de chaque classe
 cahv$desc.ind$para
 cahsd$desc.ind$para
 
-## Examen des classes de chaque BV
-base[,c("BV","classe_v","classe_sd")]
+# examen des classes de chaque BV
+dplyr::select(base, BV, classe_v, classe_sd)
 
 ## À partir d'une liste des adresses des bureaux, on essaye de trouver :
-# Des bureaux isolés (éviter les double bureaux car on n'est pas sûr de pouvoir sélectionner les répondant·es à la sortie)
-# Des bureaux au croisement de classes bien représentées
-# Des bureaux parangons d'une classe
+#
+# - des bureaux isolés
+#   (éviter les doubles bureaux car on n'est pas sûr de pouvoir sélectionner
+#    les répondant·es à la sortie)
+#
+# - des bureaux au croisement de classes bien représentées
+#
+# - des bureaux parangons d'une classe
+
+# kthxbye
