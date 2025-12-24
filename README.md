@@ -30,6 +30,8 @@ The code has less package dependencies and works without having to install some 
 ## Data sources
 
 - Insee, [Proposition de contours des bureaux de vote][contours-bv], 2023
+  - see [this blog post][contours-bv-insee]
+  - see also the [`mapvotr`][mapvotr] package
 - Insee, [Contours... IRIS®][contours-iris], 2019
 - Insee, Recensement de la population - Base infracommunale (IRIS), 2019
   - [Activité des résidents][actifs]
@@ -41,6 +43,8 @@ The code has less package dependencies and works without having to install some 
 - Ministère de l'Intérieur, [Election présidentielle des 10 et 24 avril 2022 - Résultats définitifs du 1er tour][prt122]
 
 [contours-bv]: https://www.data.gouv.fr/datasets/proposition-de-contours-des-bureaux-de-vote/
+[contours-bv-insee]: https://blog.insee.fr/a-vote-a-chaque-bureau-de-vote-ses-electeurs/
+[mapvotr]: 
 [contours-iris]: https://geoservices.ign.fr/contoursiris
 [actifs]: https://www.insee.fr/fr/statistiques/6543289
 [population]: https://www.insee.fr/fr/statistiques/6543200
