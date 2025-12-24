@@ -18,6 +18,8 @@ Mostly notes to self:
 - edited column selection within Insee files to avoid a few duplicates
 - corrected a typo that created very slightly incorrect results (_bureau_ 901)
 
+The code has less package dependencies and works without having to install some retired packages that were required by [`spReapportion`][spReapportion].
+
 [spReapportion]: https://github.com/joelgombin/spReapportion
 [sfReapportion]: https://github.com/briatte/sfReapportion
 
@@ -51,7 +53,7 @@ All from CRAN except noted otherwise:
 - `archive` (to deal with `.7z`)
 - `factoextra`
 - `FactoMineR`
-- `remotes`
+- `remotes` (to install [`sfReapportion`][sfReapportion] from GitHub)
 - `sf`
 - [`sfReapportion`][sfReapportion] (from GitHub)
 - `tidyverse`
