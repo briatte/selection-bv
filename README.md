@@ -59,7 +59,6 @@ All from CRAN except noted otherwise:
 - `archive` (to deal with `.7z`)
 - `factoextra`
 - `FactoMineR`
-- `questionr`
 - `remotes`
 - `sf`
 - [`sfReapportion`][sfReapportion] (from GitHub)

@@ -7,7 +7,7 @@
 
 # packages ----------------------------------------------------------------
 
-pkgs <- c("factoextra", "FactoMineR", "questionr", "tidyverse")
+pkgs <- c("factoextra", "FactoMineR", "tidyverse")
 for (i in pkgs) {
   if (!require(i, character.only = TRUE))
     install.packages(i)
@@ -15,7 +15,6 @@ for (i in pkgs) {
 
 library(factoextra)
 library(FactoMineR)
-library(questionr)
 library(tidyverse)
 
 # chargement des bases ----------------------------------------------------
@@ -79,7 +78,9 @@ base <- tibble(BV = base_soc$codeBureauVote,
        classe_sd = as.character(cahsd$data.clust[, 28])) %>%
   dplyr::full_join(base, by = "BV")
 
-questionr::freq(base$classe_sd)
+# pourcentages
+dplyr::count(base, classe_sd) %>%
+  dplyr::mutate(pct = 100 * n / sum(n))
 
 # ACP et classification à partir des variables électorales ----------------
 
@@ -110,7 +111,9 @@ base <- tibble(BV = base_elec$BV,
                classe_v = as.character(cahv$data.clust[, 17])) %>%
   dplyr::full_join(base, by = "BV")
 
-questionr::freq(base$classe_v)
+# pourcentages
+dplyr::count(base, classe_sd) %>%
+  dplyr::mutate(pct = 100 * n / sum(n))
 
 ### I.2 Sélection des bureaux
 
