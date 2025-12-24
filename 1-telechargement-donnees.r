@@ -102,14 +102,15 @@ if (!fs::file_exists(f)) {
 # Insee : ménages 2019 ----------------------------------------------------
 #
 # https://www.insee.fr/fr/statistiques/6543224
+# N.B. ignoring, not required for what follows
 
-u <- fs::path("https://www.insee.fr/fr/statistiques/fichier/",
-              "6543224/base-ic-couples-familles-menages-2019_csv.zip")
-f <- fs::path(d, fs::path_file(u))
-
-if (!fs::file_exists(f)) {
-  download.file(u, f, mode = "wb", quiet = FALSE)
-}
+# u <- fs::path("https://www.insee.fr/fr/statistiques/fichier/",
+#               "6543224/base-ic-couples-familles-menages-2019_csv.zip")
+# f <- fs::path(d, fs::path_file(u))
+#
+# if (!fs::file_exists(f)) {
+#   download.file(u, f, mode = "wb", quiet = FALSE)
+# }
 
 # Élections : européennes 2024 --------------------------------------------
 #

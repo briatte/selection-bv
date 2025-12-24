@@ -109,20 +109,21 @@ logement <- fs::path(d, "base-ic-logement-2019_csv.zip") %>%
   dplyr::filter(str_sub(IRIS, 1, 5) %in% code_insee_cible)
 
 # Insee : ménages 2019 ----------------------------------------------------
+#
+# N.B. ignoring, not required for what follows
 
-couple <- fs::path(d, "base-ic-couples-familles-menages-2019_csv.zip") %>%
-  readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
-                    show_col_types = FALSE) %>%
-  dplyr::select_at(c(1, 6:23)) %>%
-  dplyr::filter(str_sub(IRIS, 1, 5) %in% code_insee_cible)
+# couple <- fs::path(d, "base-ic-couples-familles-menages-2019_csv.zip") %>%
+#   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
+#                     show_col_types = FALSE) %>%
+#   dplyr::select_at(c(1, 6:23)) %>%
+#   dplyr::filter(str_sub(IRIS, 1, 5) %in% code_insee_cible)
 
 # Préparation des données -------------------------------------------------
 
 # sanity check
 stopifnot(identical(population$IRIS, actifs$IRIS),
           identical(population$IRIS, formation$IRIS),
-          identical(population$IRIS, logement$IRIS),
-          identical(population$IRIS, couple$IRIS))
+          identical(population$IRIS, logement$IRIS)) # couple$IRIS
 
 # fusion des bases infracommunales (en retirant quelques doublons accidentels)
 iris_base <- select(actifs, -P19_POP5564) %>%
@@ -130,7 +131,6 @@ iris_base <- select(actifs, -P19_POP5564) %>%
   select(-P19_POP0610, -P19_POP1824) %>%
   dplyr::full_join(formation, by = "IRIS") %>%
   dplyr::full_join(logement, by = "IRIS") %>%
-  dplyr::full_join(couple, by = "IRIS") %>%
   dplyr::transmute(IRIS,
                    Age1824   = P19_POP1824,
                    Age2539   = P19_POP2539,
