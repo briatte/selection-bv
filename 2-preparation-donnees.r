@@ -36,36 +36,48 @@ fs::dir_create(s)
 
 # contours BV -------------------------------------------------------------
 
-bv_fdc <- fs::path(d, "contours-france-entiere-latest-v2.geojson") %>%
-  sf::st_read() %>%
-  # Lille: subset from 68806 to 126 features
-  dplyr::filter(codeCommune %in% code_insee_cible)
+# speed up things by checking for pre-existing output
+out_path <- fs::path(s, str_c("Contours-", nom_fichier_base, "-BV-2025.rds"))
+if (!fs::file_exists(out_path)) {
 
-# export
-export_path <- fs::path(s, "Contours-", nom_fichier_base, "-BV-2025.rds")
-message(str_c("Contours BV 2025 exportés vers ", export_path))
-readr::write_rds(bv_fdc, export_path)
+  bv_fdc <- fs::path(d, "contours-france-entiere-latest-v2.geojson") %>%
+    sf::st_read() %>%
+    # Lille: subset from 68806 to 126 features
+    dplyr::filter(codeCommune %in% code_insee_cible)
+
+  # export
+  message(str_c("Contours BV 2025 exportés vers ", out_path))
+  readr::write_rds(bv_fdc, out_path)
+
+}
+bv_fdc <- readr::read_rds(out_path)
 
 # contours IRIS 2019 ------------------------------------------------------
 
-iris_fdc <- fs::path(d, "CONTOURS-IRIS_2-1__SHP__FRA_2019-01-01/",
-                     "CONTOURS-IRIS/",
-                     "1_DONNEES_LIVRAISON_2020-01-00139/",
-                     "CONTOURS-IRIS_2-1_SHP_LAMB93_FXX-2019/",
-                     "CONTOURS-IRIS.shp") %>%
-  sf::st_read() %>%
-  # Lille: subset from 48590 to 110 features
-  dplyr::filter(INSEE_COM %in% code_insee_cible) %>%
-  sf::st_transform(crs = "WGS84")
+# speed up things by checking for pre-existing output
+out_path <- fs::path(s, str_c("Contours-", nom_fichier_base, "-IRIS-2019.rds"))
+if (!fs::file_exists(out_path)) {
 
-# export
-export_path <- fs::path(s, "Contours-", nom_fichier_base, "-IRIS-2019.rds")
-message(str_c("Contours IRIS 2019 exportés vers ", export_path))
-readr::write_rds(iris_fdc, export_path)
+  iris_fdc <- fs::path(d, "CONTOURS-IRIS_2-1__SHP__FRA_2019-01-01/",
+                       "CONTOURS-IRIS/",
+                       "1_DONNEES_LIVRAISON_2020-01-00139/",
+                       "CONTOURS-IRIS_2-1_SHP_LAMB93_FXX-2019/",
+                       "CONTOURS-IRIS.shp") %>%
+    sf::st_read() %>%
+    # Lille: subset from 48590 to 110 features
+    dplyr::filter(INSEE_COM %in% code_insee_cible) %>%
+    sf::st_transform(crs = "WGS84")
+
+  # export
+  message(str_c("Contours IRIS 2019 exportés vers ", out_path))
+  readr::write_rds(iris_fdc, out_path)
+
+}
+iris_fdc <- readr::read_rds(out_path)
 
 # Insee : actifs 2019 -----------------------------------------------------
 
-actifs <- fs::path(d, "/base-ic-activite-residents-2019_csv.zip") %>%
+actifs <- fs::path(d, "base-ic-activite-residents-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:10, 14, 18:21, 30:33, 41, 43:60, 63, 66, 69, 72:86,
@@ -74,7 +86,7 @@ actifs <- fs::path(d, "/base-ic-activite-residents-2019_csv.zip") %>%
 
 # Insee : population 2019 -------------------------------------------------
 
-population <- fs::path(d, "/base-ic-evol-struct-pop-2019_csv.zip") %>%
+population <- fs::path(d, "base-ic-evol-struct-pop-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:26, 36, 46:54, 73:75)) %>%
@@ -82,7 +94,7 @@ population <- fs::path(d, "/base-ic-evol-struct-pop-2019_csv.zip") %>%
 
 # Insee : diplômes/formation 2019 -----------------------------------------
 
-formation <- fs::path(d, "/base-ic-diplomes-formation-2019_csv.zip") %>%
+formation <- fs::path(d, "base-ic-diplomes-formation-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:27)) %>%
@@ -90,7 +102,7 @@ formation <- fs::path(d, "/base-ic-diplomes-formation-2019_csv.zip") %>%
 
 # Insee : logement 2019 ---------------------------------------------------
 
-logement <- fs::path(d, "/base-ic-logement-2019_csv.zip") %>%
+logement <- fs::path(d, "base-ic-logement-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:7, 9, 12:16, 18, 20, 22:35, 55:59, 64:77)) %>%
@@ -98,7 +110,7 @@ logement <- fs::path(d, "/base-ic-logement-2019_csv.zip") %>%
 
 # Insee : ménages 2019 ----------------------------------------------------
 
-couple <- fs::path(d, "/base-ic-couples-familles-menages-2019_csv.zip") %>%
+couple <- fs::path(d, "base-ic-couples-familles-menages-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:23)) %>%
@@ -203,9 +215,9 @@ base_soc <- base_soc %>%
   select_at(c(1, 17, 2:6, 40, 11:16, 18:19, 21:24, 27, 41, 28:34))
 
 # export
-export_path <- fs::path(s, "/Base-", nom_fichier_base, "-soc.rds")
-message("Base Insee exportée vers ", export_path)
-readr::write_rds(base_soc, export_path)
+out_path <- fs::path(s, str_c("Base-", nom_fichier_base, "-soc.rds"))
+message("Base Insee exportée vers ", out_path)
+readr::write_rds(base_soc, out_path)
 
 # Élections : européennes 2024 --------------------------------------------
 
@@ -253,22 +265,22 @@ pr <- fs::path(d, "resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
                    Inscrits_p = Inscrits)
 
 # sanity check
-stopifnot(identical(sort(eur$BV), sort(prt1$BV)))
+stopifnot(identical(sort(eur$BV), sort(pr$BV)))
 
 # fusion des bases électorales
-base_elec <- dplyr::full_join(eur, prt1, by = "BV")
+base_elec <- dplyr::full_join(eur, pr, by = "BV")
 
 # export
-export_path <- fs::path(s, "/Base-", nom_fichier_base, "-elec.rds")
-message("Base électorale exportée vers ", export_path)
-readr::write_rds(base_elec, export_path)
+out_path <- fs::path(s, str_c("Base-", nom_fichier_base, "-elec.rds"))
+message("Base électorale exportée vers ", out_path)
+readr::write_rds(base_elec, out_path)
 
 # base combinée
 base <- dplyr::full_join(base_elec, base_soc, by = c("BV" = "codeBureauVote"))
 
 # export
-export_path <- fs::path(s, "s/Base-", nom_fichier_base, "-finale.rds")
-message("Base combinée exportée vers ", export_path)
-readr::write_rds(base, export_path)
+out_path <- fs::path(s, str_c("Base-", nom_fichier_base, "-finale.rds"))
+message("Base combinée exportée vers ", out_path)
+readr::write_rds(base, out_path)
 
 # kthxbye
