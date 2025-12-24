@@ -30,7 +30,7 @@ Mostly notes to self:
   - [Population][population]
   - [Diplômes - Formation][diplome-formation]
   - [Logement][logement]
-  - [Couples - Familles - Ménages][menages]
+  <!-- - [Couples - Familles - Ménages][menages] -->
 - Ministère de l'Intérieur, [Résultats des élections européennes du 9 juin 2024][eur24]
 - Ministère de l'Intérieur, [Election présidentielle des 10 et 24 avril 2022 - Résultats définitifs du 1er tour][prt122]
 
@@ -40,7 +40,7 @@ Mostly notes to self:
 [population]: https://www.insee.fr/fr/statistiques/6543200
 [diplome-formation]: https://www.insee.fr/fr/statistiques/6543298
 [logement]: https://www.insee.fr/fr/statistiques/6543302
-[menages]: https://www.insee.fr/fr/statistiques/6543224
+<!-- [menages]: https://www.insee.fr/fr/statistiques/6543224 -->
 [eur24]: https://www.data.gouv.fr/datasets/resultats-des-elections-europeennes-du-9-juin-2024
 [prt122]: https://www.data.gouv.fr/datasets/election-presidentielle-des-10-et-24-avril-2022-resultats-definitifs-du-1er-tour
 
