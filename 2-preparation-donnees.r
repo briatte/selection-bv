@@ -1,7 +1,6 @@
-
 #
 # Préparation de toutes les données requises par
-#   - selection-bureaux.r
+#   3-selection-bureaux.r
 #
 
 # packages ----------------------------------------------------------------
@@ -13,7 +12,7 @@ for (i in pkgs) {
 }
 
 library(sf)
-library(tidyverse)
+library(tidyverse) # fs, dplyr, readr, stringr, etc.
 
 if (!require(sfReapportion)) {
   remotes::install_github("briatte/sfReapportion")

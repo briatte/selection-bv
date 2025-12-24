@@ -1,4 +1,11 @@
-## Chargement des packages utiles
+#
+# Téléchargement de toutes les données requises par
+#
+#   2-preparation-donnees.r
+#   3-selection-bureaux.r
+#
+
+# packages ----------------------------------------------------------------
 
 pkgs <- c("factoextra", "FactoMineR", "questionr", "tidyverse")
 for (i in pkgs) {
