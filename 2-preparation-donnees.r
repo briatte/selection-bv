@@ -209,8 +209,8 @@ readr::write_rds(base_soc, export_path)
 
 # Élections : européennes 2024 --------------------------------------------
 
-eur <- fs::path(d, "/resultats-definitifs-par-bureau-de-vote.csv.zip") %>%
-  readr::read_csv2(show_col_types = FALSE) %>%
+eur <- fs::path(d, "resultats-definitifs-par-bureau-de-vote.csv.zip") %>%
+  readr::read_delim(delim = ";", show_col_types = FALSE) %>%
   dplyr::filter(`Code commune` %in% code_insee_cible) %>%
   dplyr::transmute(BV = str_c(`Code commune`, `Code BV`, sep = "_"),
                    Abstention_e = 100 - 100 * Votants / Inscrits,
@@ -227,19 +227,19 @@ eur <- fs::path(d, "/resultats-definitifs-par-bureau-de-vote.csv.zip") %>%
 # Elections : présidentielle 2022 (tour 1) --------------------------------
 
 # we need to hack the column names to fill in the missing ones
-n <- fs::path(d, "/resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
-  readr::read_csv2(n_max = 0, locale = locale(encoding = "latin1"),
-                   show_col_types = FALSE) %>%
-  names()
+n <- fs::path(d, "resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
+  readr::read_delim(delim = ";", n_max = 0,
+                    locale = locale(encoding = "latin1"),
+                    show_col_types = FALSE) %>%
 
 # produce the repeated column names (will get 'repaired' just below)
 n <- c(n[ 1:21 ], rep(n[ 22:28 ], 12))
 
-prt1 <- fs::path(d, "/resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
-  readr::read_csv2(col_names = n, skip = 1,
-                   locale = locale(decimal_mark = ",", encoding = "latin1"),
-                   name_repair = "unique_quiet",
-                   show_col_types = FALSE) %>%
+pr <- fs::path(d, "resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
+  readr::read_delim(delim = ";", col_names = n, skip = 1,
+                    locale = locale(decimal_mark = ",", encoding = "latin1"),
+                    name_repair = "unique_quiet",
+                    show_col_types = FALSE) %>%
   dplyr::mutate(insee = str_c(`Code du département`, `Code de la commune`)) %>%
   dplyr::filter(insee %in% code_insee_cible) %>%
   dplyr::transmute(BV = str_c(insee, `Code du b.vote`, sep = "_"),
