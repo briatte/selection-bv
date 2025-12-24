@@ -267,14 +267,14 @@ pr <- fs::path(d, "resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
   dplyr::mutate(insee = str_c(`Code du département`, `Code de la commune`)) %>%
   dplyr::filter(insee %in% code_insee_cible) %>%
   dplyr::transmute(BV = str_c(insee, `Code du b.vote`, sep = "_"),
+                   Inscrits_p = Inscrits,
                    Abstention_p = 100 - 100 * Votants / Inscrits,
                    Melenchon = 100 * `Voix...68` / Inscrits, # Voix.6
                    Macron    = 100 * `Voix...40` / Inscrits, # Voix.2
                    LePen     = 100 * `Voix...54` / Inscrits, # Voix.4
                    Zemmour   = 100 * `Voix...61` / Inscrits, # Voix.5
-                   Jadot     = 100 * `Voix...82` / Inscrits, # Voix.8
                    Pecresse  = 100 * `Voix...89` / Inscrits, # Voix.9
-                   Inscrits_p = Inscrits)
+                   Jadot     = 100 * `Voix...82` / Inscrits) # Voix.8
 
 # sanity check
 stopifnot(identical(sort(eur$BV), sort(pr$BV)))
