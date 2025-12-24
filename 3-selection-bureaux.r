@@ -20,7 +20,7 @@ library(tidyverse)
 # paramètres généraux -----------------------------------------------------
 
 nom_fichier_base <- "Lille"
-bureaux_a_exclure <- c("59350_0901") # bureau 901 = prisonniers
+bureaux_a_exclure <- c("59350_0901") # bureau 901 Lille = prisonniers
 
 # dossier-cible -----------------------------------------------------------
 
