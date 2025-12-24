@@ -20,7 +20,7 @@ if (!require(sfReapportion)) {
 
 library(sfReapportion)
 
-# global settings ---------------------------------------------------------
+# paramètres généraux -----------------------------------------------------
 
 code_insee_cible <- "59350"
 nom_fichier_base <- "Lille"
@@ -30,7 +30,6 @@ nom_fichier_base <- "Lille"
 d <- "donnees"
 stopifnot(fs::dir_exists(d))
 
-# TODO: fs::path
 s <- "sorties"
 fs::dir_create(s)
 
