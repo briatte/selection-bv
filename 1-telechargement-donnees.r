@@ -119,13 +119,16 @@ u <- fs::path("https://www.data.gouv.fr/api/1/datasets/r/",
               "cc1883d9-1265-4365-b754-fb6aef22d82e")
 f <- fs::path(d, "resultats-definitifs-par-bureau-de-vote.csv")
 
-if (!fs::file_exists(f)) {
-  download.file(u, f, mode = "wb", quiet = FALSE)
-}
+# check existence of zipped version
+if (!fs::file_exists(str_c(f, ".zip"))) {
 
-# zip it
-utils::zip(str_c(f, ".zip"), f, flags = "-r9Xj") # junk the paths
-fs::file_delete(f)
+  download.file(u, f, mode = "wb", quiet = FALSE)
+
+  # zip it
+  utils::zip(str_c(f, ".zip"), f, flags = "-r9Xj") # junk the paths
+  fs::file_delete(f)
+
+}
 
 # Élections : présidentielle 2022 T1 --------------------------------------
 #
@@ -135,12 +138,15 @@ u <- fs::path("https://www.data.gouv.fr/api/1/datasets/r/",
               "79b5cac4-4957-486b-bbda-322d80868224")
 f <- fs::path(d, "resultats-par-niveau-burvot-t1-france-entiere.txt")
 
-if (!fs::file_exists(f)) {
-  download.file(u, f, mode = "wb", quiet = FALSE)
-}
+# check existence of zipped version
+if (!fs::file_exists(str_c(f, ".zip"))) {
 
-# zip it
-utils::zip(str_c(f, ".zip"), f, flags = "-r9Xj") # junk the paths
-fs::file_delete(f)
+  download.file(u, f, mode = "wb", quiet = FALSE)
+
+  # zip it
+  utils::zip(str_c(f, ".zip"), f, flags = "-r9Xj") # junk the paths
+  fs::file_delete(f)
+
+}
 
 # kthxbye
