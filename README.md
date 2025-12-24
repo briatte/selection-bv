@@ -1,16 +1,10 @@
 ## HOWTO
 
-1. Run `1-telechargement-donnees.r` to get all required datasets downloaded and saved into `donnees`.
-2. Run `2-preparation-donnees.r` to process all datasets and save outputs into `sorties`.
+1. Run `1-telechargement-donnees.r` to save all required datasets to `donnees`.
+2. Run `2-preparation-donnees.r` to process all datasets.
 3. Run `3-selection-bureaux.r` to get the _bureaux_ classified.
 
-Alternatively, just run this to get PDF reports for two example cities:
-
-```r
-library(rmarkdown)
-render("BV-Lille.Rmd", pdf_document())
-render("BV-Bordeaux.Rmd", pdf_document())
-```
+Processed datasets and final results will be saved into `sorties`.
 
 ## Changes from Tristan's code
 
@@ -19,10 +13,9 @@ Mostly notes to self:
 - automated all required data downloads
 - automated all package installs
 - updated [`spReapportion`][spReapportion] to [`sfReapportion`][sfReapportion]
-- `.pmtiles` format preferred to `.geojson` for compactness
 - most data saved in, and read from, zipped archives, to save disk space
-- edited column selection within Insee files to avoid a few duplicates
 - code rewritten in order to allow easier re-use with other cities
+- edited column selection within Insee files to avoid a few duplicates
 - corrected a typo that created very slightly incorrect results (_bureau_ 901)
 
 [spReapportion]: https://github.com/joelgombin/spReapportion
