@@ -4,9 +4,10 @@
 2. Run `2-preparation-donnees.r` to process all datasets.
 3. Run `3-selection-bureaux.r` to get the _bureaux_ classified.
 
-Processed datasets and final results will be saved into `sorties`, including a summary map of the top 5 representative clusters in each class (results below are for __Lille__):
+Processed datasets and final results will be saved into `sorties`, including a summary map of the top 5 representative clusters in each class:
 
 ![](sorties/resultats-CAH-Lille.png)
+![](sorties/resultats-CAH-Grenoble.png)
 
 ## Changes from Tristan's code
 
