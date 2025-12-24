@@ -174,8 +174,6 @@ iris_base <- select(actifs, -P19_POP5564) %>%
                    Population_15_64_ans = P19_POP1564,
                    Salaries = P19_SAL15P)
 
-# iris_base<-iris_base[,c(1,189:226)]
-
 # réapportion BV / IRIS ---------------------------------------------------
 
 base_soc <- sfReapportion::sfReapportion(iris_fdc, bv_fdc, iris_base,
@@ -211,7 +209,7 @@ base_soc <- base_soc %>%
                 Age4054   = 100 * Age4054   / Population_18_ans_et_plus,
                 Age5564   = 100 * Age5564   / Population_18_ans_et_plus,
                 Age65plus = 100 * Age65plus / Population_18_ans_et_plus) %>%
-  # keep Tristan's column order/selection, just in case
+  # keep Tristan's column order/selection for comparison with original results
   select_at(c(1, 17, 2:6, 40, 11:16, 18:19, 21:24, 27, 41, 28:34))
 
 # export
