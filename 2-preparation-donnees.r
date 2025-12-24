@@ -80,8 +80,13 @@ iris_fdc <- readr::read_rds(out_path)
 actifs <- fs::path(d, "base-ic-activite-residents-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
-  dplyr::select_at(c(1, 6:10, 14, 18:21, 30:33, 41, 43:60, 63, 66, 69, 72:86,
-                     89, 92, 95, 96, 100:107, 114:120)) %>%
+  # dplyr::select_at(c(1, 6:10, 14, 18:21, 30:33, 41, 43:60, 63, 66, 69, 72:86,
+  #                    89, 92, 95, 96, 100:107, 114:120)) %>%
+  dplyr::select(IRIS, P19_POP1564, P19_CHOM1564, P19_INACT1564, C19_ACT1564,
+                C19_ACTOCC1564, C19_ACTOCC1564_CS1, C19_ACTOCC1564_CS2,
+                C19_ACTOCC1564_CS3, C19_ACTOCC1564_CS4, C19_ACTOCC1564_CS5,
+                C19_ACTOCC1564_CS6, P19_SAL15P, P19_SAL15P_TP, P19_SAL15P_CDD,
+                P19_SAL15P_INTERIM, P19_SAL15P_EMPAID, P19_SAL15P_APPR) %>%
   dplyr::filter(str_sub(IRIS, 1, 5) %in% code_insee_cible)
 
 # Insee : population 2019 -------------------------------------------------
@@ -89,7 +94,11 @@ actifs <- fs::path(d, "base-ic-activite-residents-2019_csv.zip") %>%
 population <- fs::path(d, "base-ic-evol-struct-pop-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
-  dplyr::select_at(c(1, 6:26, 36, 46:54, 73:75)) %>%
+  # dplyr::select_at(c(1, 6:26, 36, 46:54, 73:75)) %>%
+  dplyr::select(IRIS, P19_POP, P19_POP0002, P19_POP0305, P19_POP0610,
+                P19_POP1117, P19_POP1824, P19_POP2539, P19_POP4054,
+                P19_POP5564, P19_POP65P, C19_POP15P, C19_POP15P_CS7,
+                P19_POP_ETR, P19_POP_IMM, P19_PMEN) %>%
   dplyr::filter(str_sub(IRIS, 1, 5) %in% code_insee_cible)
 
 # Insee : diplômes/formation 2019 -----------------------------------------
@@ -97,7 +106,10 @@ population <- fs::path(d, "base-ic-evol-struct-pop-2019_csv.zip") %>%
 formation <- fs::path(d, "base-ic-diplomes-formation-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
-  dplyr::select_at(c(1, 6:27)) %>%
+  # dplyr::select_at(c(1, 6:27)) %>%
+  dplyr::select(IRIS, P19_NSCOL15P, P19_NSCOL15P_DIPLMIN, P19_NSCOL15P_BEPC,
+                P19_NSCOL15P_CAPBEP, P19_NSCOL15P_BAC, P19_NSCOL15P_SUP2,
+                P19_NSCOL15P_SUP34, P19_NSCOL15P_SUP5) %>%
   dplyr::filter(str_sub(IRIS, 1, 5) %in% code_insee_cible)
 
 # Insee : logement 2019 ---------------------------------------------------
@@ -105,7 +117,10 @@ formation <- fs::path(d, "base-ic-diplomes-formation-2019_csv.zip") %>%
 logement <- fs::path(d, "base-ic-logement-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
-  dplyr::select_at(c(1, 6:7, 9, 12:16, 18, 20, 22:35, 55:59, 64:77)) %>%
+  # dplyr::select_at(c(1, 6:7, 9, 12:16, 18, 20, 22:35, 55:59, 64:77)) %>%
+  dplyr::select(IRIS, P19_RP, P19_PMEN_ANEM0002, P19_PMEN_ANEM0204,
+                P19_PMEN_ANEM0509, P19_PMEN_ANEM10P, P19_RP_PROP,
+                P19_RP_LOCHLMV) %>%
   dplyr::filter(str_sub(IRIS, 1, 5) %in% code_insee_cible)
 
 # Insee : ménages 2019 ----------------------------------------------------
@@ -125,10 +140,8 @@ stopifnot(identical(population$IRIS, actifs$IRIS),
           identical(population$IRIS, formation$IRIS),
           identical(population$IRIS, logement$IRIS)) # couple$IRIS
 
-# fusion des bases infracommunales (en retirant quelques doublons accidentels)
-iris_base <- select(actifs, -P19_POP5564) %>%
-  dplyr::full_join(population, by = "IRIS") %>%
-  select(-P19_POP0610, -P19_POP1824) %>%
+# fusion des bases infracommunales
+iris_base <- dplyr::full_join(actifs, population, by = "IRIS") %>%
   dplyr::full_join(formation, by = "IRIS") %>%
   dplyr::full_join(logement, by = "IRIS") %>%
   dplyr::transmute(IRIS,
