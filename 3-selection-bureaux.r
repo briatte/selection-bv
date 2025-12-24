@@ -118,8 +118,23 @@ with(base, table(classe_sd, classe_v))
 cahv$desc.ind$para
 cahsd$desc.ind$para
 
+# extraction des parangons de la CAH sur variables électorales
+parangons_v <- as.vector(sapply(cahv$desc.ind$para, names))
+# extraction des parangons de la CAH sur variables socio-démographiques
+parangons_sd <- as.vector(sapply(cahsd$desc.ind$para, names))
+
+# examen des parangons (meilleurs bureaux tout en haut)
+dplyr::select(base, BV, classe_v, classe_sd) %>%
+  mutate(parangon_sd = as.integer(BV %in% parangons_sd),
+         parangon_v  = as.integer(BV %in% parangons_v),
+         score = parangon_sd + parangon_v) %>%
+  filter(score > 0) %>%
+  arrange(-score) %>%
+  print(n = Inf)
+
 # examen des classes de chaque BV
-dplyr::select(base, BV, classe_v, classe_sd)
+dplyr::select(base, BV, classe_v, classe_sd) %>%
+  print(n = Inf)
 
 ## À partir d'une liste des adresses des bureaux, on essaye de trouver :
 #
