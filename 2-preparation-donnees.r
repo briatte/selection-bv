@@ -37,7 +37,7 @@ fs::dir_create(s)
 # contours BV -------------------------------------------------------------
 
 # speed up things by checking for pre-existing output
-out_path <- fs::path(s, str_c("Contours-", nom_fichier_base, "-BV-2025.rds"))
+out_path <- fs::path(s, str_c("contours-", nom_fichier_base, "-BV-2025.rds"))
 if (!fs::file_exists(out_path)) {
 
   bv_fdc <- fs::path(d, "contours-france-entiere-latest-v2.geojson") %>%
@@ -55,7 +55,7 @@ bv_fdc <- readr::read_rds(out_path)
 # contours IRIS 2019 ------------------------------------------------------
 
 # speed up things by checking for pre-existing output
-out_path <- fs::path(s, str_c("Contours-", nom_fichier_base, "-IRIS-2019.rds"))
+out_path <- fs::path(s, str_c("contours-", nom_fichier_base, "-IRIS-2019.rds"))
 if (!fs::file_exists(out_path)) {
 
   iris_fdc <- fs::path(d, "CONTOURS-IRIS_2-1__SHP__FRA_2019-01-01/",
@@ -215,7 +215,7 @@ base_soc <- base_soc %>%
   select_at(c(1, 17, 2:6, 40, 11:16, 18:19, 21:24, 27, 41, 28:34))
 
 # export
-out_path <- fs::path(s, str_c("Base-", nom_fichier_base, "-soc.rds"))
+out_path <- fs::path(s, str_c("base-", nom_fichier_base, "-soc.rds"))
 message("Base Insee exportée vers ", out_path)
 readr::write_rds(base_soc, out_path)
 
@@ -272,7 +272,7 @@ stopifnot(identical(sort(eur$BV), sort(pr$BV)))
 base_elec <- dplyr::full_join(eur, pr, by = "BV")
 
 # export
-out_path <- fs::path(s, str_c("Base-", nom_fichier_base, "-elec.rds"))
+out_path <- fs::path(s, str_c("base-", nom_fichier_base, "-elec.rds"))
 message("Base électorale exportée vers ", out_path)
 readr::write_rds(base_elec, out_path)
 
@@ -280,7 +280,7 @@ readr::write_rds(base_elec, out_path)
 base <- dplyr::full_join(base_elec, base_soc, by = c("BV" = "codeBureauVote"))
 
 # export
-out_path <- fs::path(s, str_c("Base-", nom_fichier_base, "-finale.rds"))
+out_path <- fs::path(s, str_c("base-", nom_fichier_base, "-finale.rds"))
 message("Base combinée exportée vers ", out_path)
 readr::write_rds(base, out_path)
 
