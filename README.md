@@ -4,7 +4,9 @@
 2. Run `2-preparation-donnees.r` to process all datasets.
 3. Run `3-selection-bureaux.r` to get the _bureaux_ classified.
 
-Processed datasets and final results will be saved into `sorties`.
+Processed datasets and final results will be saved into `sorties`, including a summary map of the top 5 representative clusters in each class (results below are for __Lille__):
+
+![](sorties/resultats-CAH-Lille.png)
 
 ## Changes from Tristan's code
 
@@ -17,6 +19,7 @@ Mostly notes to self:
 - code rewritten in order to allow easier re-use with other cities
 - edited column selection within Insee files to avoid a few duplicates
 - corrected a typo that created very slightly incorrect results (_bureau_ 901)
+- visualization of the final results
 
 The code has less package dependencies and works without having to install some retired packages that were required by [`spReapportion`][spReapportion].
 

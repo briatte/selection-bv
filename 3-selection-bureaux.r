@@ -7,7 +7,7 @@
 
 # packages ----------------------------------------------------------------
 
-pkgs <- c("factoextra", "FactoMineR", "tidyverse")
+pkgs <- c("factoextra", "FactoMineR", "patchwork", "sf", "tidyverse")
 for (i in pkgs) {
   if (!require(i, character.only = TRUE))
     install.packages(i)
@@ -15,6 +15,8 @@ for (i in pkgs) {
 
 library(factoextra)
 library(FactoMineR)
+library(patchwork)
+library(sf)
 library(tidyverse)
 
 # paramètres généraux -----------------------------------------------------
@@ -161,5 +163,65 @@ readr::write_tsv(bv_results, out_path)
 # - des bureaux au croisement de classes bien représentées
 #
 # - des bureaux parangons d'une classe
+
+
+# visualisation -----------------------------------------------------------
+
+cluster_sd <- FactoMineR::catdes(cahsd$data.clust, num.var = 28)$quanti %>%
+  lapply(rownames) %>%
+  lapply(head, 6) %>%
+  sapply(str_c, collapse = ", ")
+  # sapply(function(x) str_c(str_c(x[1:3], collapse = ", "), ",\n",
+  #                          str_c(x[4:6], collapse = ", ")))
+
+cluster_v <- FactoMineR::catdes(cahv$data.clust, num.var = 17)$quanti %>%
+  lapply(rownames) %>%
+  lapply(head, 6) %>%
+  sapply(str_c, collapse = ", ")
+  # sapply(function(x) str_c(str_c(x[1:3], collapse = ", "), ",\n",
+  #                          str_c(x[4:6], collapse = ", ")))
+
+bv_map <- readr::read_rds("sorties/contours-Lille-BV-2025.rds") %>%
+  dplyr::left_join(bv_results, by = c("codeBureauVote" = "BV")) %>%
+  dplyr::mutate(lbl_sd = str_c(classe_sd, " : ", cluster_sd[ classe_sd ]),
+                lbl_v = str_c(classe_v, " : ", cluster_v[ classe_v ]),
+                numeroBureauVote = str_remove(numeroBureauVote, "^0+"))
+
+p1 <- ggplot(bv_map) +
+  geom_sf(aes(fill = factor(lbl_sd), alpha = factor(parangon_sd))) +
+  geom_sf_label(data = filter(bv_map, parangon_sd == 1),
+                aes(label = numeroBureauVote, fill = factor(lbl_sd)),
+                color = "white", show.legend = FALSE) +
+  scale_fill_brewer("", palette = "Set1") +
+  scale_alpha_manual("", values = c("0" = 0.5, "1" = 1)) +
+  guides(alpha = "none") +
+  theme_void(base_size = 12) +
+  theme(legend.position = "bottom",
+        legend.direction = "vertical",
+        legend.key.spacing.y = unit(2, "mm"),
+        legend.text = element_text(face = "bold", size = 12)) +
+  labs(title = "Classification par variables socio-démographiques",
+       subtitle = "Base : données infracommunales Insee 2019")
+
+p2 <- ggplot(bv_map) +
+  geom_sf(aes(fill = factor(lbl_v), alpha = factor(parangon_v))) +
+  geom_sf_label(data = filter(bv_map, parangon_v == 1),
+                aes(label = numeroBureauVote, fill = factor(lbl_v)),
+                color = "white", show.legend = FALSE) +
+  scale_fill_brewer("", palette = "Set2") +
+  scale_alpha_manual("", values = c("0" = 0.5, "1" = 1)) +
+  guides(alpha = "none") +
+  theme_void(base_size = 12) +
+  theme(legend.position = "bottom",
+        legend.direction = "vertical",
+        legend.key.spacing.y = unit(2, "mm"),
+        legend.text = element_text(face = "bold", size = 12)) +
+  labs(title = "Classification par variables électorales",
+       subtitle = "Base : élections présidentielle 2022 T1 et européennes 2024")
+
+# export
+out_path <- fs::path(s, str_c("resultats-CAH-", nom_fichier_base, ".png"))
+message("Carte des clusters CAH exportée vers ", out_path)
+ggplot2::ggsave(out_path, p1 + p2, width = 16, height = 8)
 
 # kthxbye
