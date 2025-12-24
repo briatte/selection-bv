@@ -25,7 +25,10 @@ library(sfReapportion)
 code_insee_cible <- "59350"
 nom_fichier_base <- "Lille"
 
-# dossier-cible -----------------------------------------------------------
+# dossiers-cibles ---------------------------------------------------------
+
+d <- "donnees"
+stopifnot(fs::dir_exists(d))
 
 # TODO: fs::path
 s <- "sorties"
@@ -39,31 +42,30 @@ bv_fdc <- "donnees/contours-france-entiere-latest-v2.geojson" %>%
   dplyr::filter(codeCommune %in% code_insee_cible)
 
 # export
-export_path <- str_c("sorties/Contours-", nom_fichier_base, "-BV-2025.rds")
+export_path <- fs::path(s, "Contours-", nom_fichier_base, "-BV-2025.rds")
 message(str_c("Contours BV 2025 exportés vers ", export_path))
 readr::write_rds(bv_fdc, export_path)
 
 # contours IRIS 2019 ------------------------------------------------------
 
-iris_fdc <- str_c("donnees/",
-                  "CONTOURS-IRIS_2-1__SHP__FRA_2019-01-01/",
-                  "CONTOURS-IRIS/",
-                  "1_DONNEES_LIVRAISON_2020-01-00139/",
-                  "CONTOURS-IRIS_2-1_SHP_LAMB93_FXX-2019/",
-                  "CONTOURS-IRIS.shp") %>%
+iris_fdc <- fs::path(d, "CONTOURS-IRIS_2-1__SHP__FRA_2019-01-01/",
+                     "CONTOURS-IRIS/",
+                     "1_DONNEES_LIVRAISON_2020-01-00139/",
+                     "CONTOURS-IRIS_2-1_SHP_LAMB93_FXX-2019/",
+                     "CONTOURS-IRIS.shp") %>%
   sf::st_read() %>%
   # Lille: subset from 48590 to 110 features
   dplyr::filter(INSEE_COM %in% code_insee_cible) %>%
   sf::st_transform(crs = "WGS84")
 
 # export
-export_path <- str_c("sorties/Contours-", nom_fichier_base, "-IRIS-2019.rds")
+export_path <- fs::path(s, "Contours-", nom_fichier_base, "-IRIS-2019.rds")
 message(str_c("Contours IRIS 2019 exportés vers ", export_path))
 readr::write_rds(iris_fdc, export_path)
 
 # Insee : actifs 2019 -----------------------------------------------------
 
-actifs <- "donnees/base-ic-activite-residents-2019_csv.zip" %>%
+actifs <- fs::path(d, "/base-ic-activite-residents-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:10, 14, 18:21, 30:33, 41, 43:60, 63, 66, 69, 72:86,
@@ -72,7 +74,7 @@ actifs <- "donnees/base-ic-activite-residents-2019_csv.zip" %>%
 
 # Insee : population 2019 -------------------------------------------------
 
-population <- "donnees/base-ic-evol-struct-pop-2019_csv.zip" %>%
+population <- fs::path(d, "/base-ic-evol-struct-pop-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:26, 36, 46:54, 73:75)) %>%
@@ -80,7 +82,7 @@ population <- "donnees/base-ic-evol-struct-pop-2019_csv.zip" %>%
 
 # Insee : diplômes/formation 2019 -----------------------------------------
 
-formation <- "donnees/base-ic-diplomes-formation-2019_csv.zip" %>%
+formation <- fs::path(d, "/base-ic-diplomes-formation-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:27)) %>%
@@ -88,7 +90,7 @@ formation <- "donnees/base-ic-diplomes-formation-2019_csv.zip" %>%
 
 # Insee : logement 2019 ---------------------------------------------------
 
-logement <- "donnees/base-ic-logement-2019_csv.zip" %>%
+logement <- fs::path(d, "/base-ic-logement-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:7, 9, 12:16, 18, 20, 22:35, 55:59, 64:77)) %>%
@@ -96,7 +98,7 @@ logement <- "donnees/base-ic-logement-2019_csv.zip" %>%
 
 # Insee : ménages 2019 ----------------------------------------------------
 
-couple <- "donnees/base-ic-couples-familles-menages-2019_csv.zip" %>%
+couple <- fs::path(d, "/base-ic-couples-familles-menages-2019_csv.zip") %>%
   readr::read_delim(delim = ";", locale = locale(decimal_mark = "."),
                     show_col_types = FALSE) %>%
   dplyr::select_at(c(1, 6:23)) %>%
@@ -203,13 +205,13 @@ base_soc <- base_soc %>%
   select_at(c(1, 17, 2:6, 40, 11:16, 18:19, 21:24, 27, 41, 28:34))
 
 # export
-export_path <- str_c("sorties/Base-", nom_fichier_base, "-soc.rds")
+export_path <- fs::path(s, "/Base-", nom_fichier_base, "-soc.rds")
 message("Base Insee exportée vers ", export_path)
 readr::write_rds(base_soc, export_path)
 
 # Élections : européennes 2024 --------------------------------------------
 
-eur <- "donnees/resultats-definitifs-par-bureau-de-vote.csv.zip" %>%
+eur <- fs::path(d, "/resultats-definitifs-par-bureau-de-vote.csv.zip") %>%
   readr::read_csv2(show_col_types = FALSE) %>%
   dplyr::filter(`Code commune` %in% code_insee_cible) %>%
   transmute(BV = str_c(`Code commune`, `Code BV`, sep = "_"),
@@ -226,8 +228,8 @@ eur <- "donnees/resultats-definitifs-par-bureau-de-vote.csv.zip" %>%
 
 # Elections : présidentielle 2022 (tour 1) --------------------------------
 
-# we need to hack the column names because most are missing
-n <- "donnees/resultats-par-niveau-burvot-t1-france-entiere.txt.zip" %>%
+# we need to hack the column names to fill in the missing ones
+n <- fs::path(d, "/resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
   readr::read_csv2(n_max = 0, locale = locale(encoding = "latin1"),
                    show_col_types = FALSE) %>%
   names()
@@ -235,7 +237,7 @@ n <- "donnees/resultats-par-niveau-burvot-t1-france-entiere.txt.zip" %>%
 # produce the repeated column names (will get 'repaired' just below)
 n <- c(n[ 1:21 ], rep(n[ 22:28 ], 12))
 
-prest1 <- "donnees/resultats-par-niveau-burvot-t1-france-entiere.txt.zip" %>%
+prt1 <- fs::path(d, "/resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
   readr::read_csv2(col_names = n, skip = 1,
                    locale = locale(decimal_mark = ",", encoding = "latin1"),
                    name_repair = "unique_quiet",
@@ -261,7 +263,7 @@ stopifnot(identical(sort(eur$BV), sort(prest1$BV)))
 base_elec <- dplyr::full_join(eur, prest1, by = "BV")
 
 # export
-export_path <- str_c("sorties/Base-", nom_fichier_base, "-elec.rds")
+export_path <- fs::path(s, "/Base-", nom_fichier_base, "-elec.rds")
 message("Base électorale exportée vers ", export_path)
 readr::write_rds(base_elec, export_path)
 
@@ -269,7 +271,7 @@ readr::write_rds(base_elec, export_path)
 base <- dplyr::full_join(base_elec, base_soc, by = c("BV" = "codeBureauVote"))
 
 # export
-export_path <- str_c("sorties/Base-", nom_fichier_base, "-finale.rds")
+export_path <- fs::path(s, "s/Base-", nom_fichier_base, "-finale.rds")
 message("Base combinée exportée vers ", export_path)
 readr::write_rds(base, export_path)
 
