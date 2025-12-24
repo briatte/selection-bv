@@ -49,7 +49,7 @@ base <- fs::path(s, str_c("Base-", nom_fichier_base, "-finale.rds")) %>%
   readr::read_rds() %>%
   dplyr::filter(!BV %in% bureaux_a_exclure)
 
-# ACP et classification à partir des variables socioéconomiques -----------
+# ACP et classification à partir des variables socio-démographiques -------
 
 # ACP
 acpsd <- select(base_soc, -codeBureauVote, -Population) %>%
@@ -73,9 +73,11 @@ ggplot2::ggsave(out_path, plot, width = 10, height = 10)
 cahsd <- FactoMineR::HCPC(acpsd, metric = "euclidean", method = "ward",
                           graph = FALSE)
 
+# extraction des clusters
+cahsd_descr <- FactoMineR::catdes(cahsd$data.clust, num.var = 28)$quanti
+
 # description de la CAH
-FactoMineR::catdes(cahsd$data.clust, num.var = 28)$quanti %>%
-  lapply(round, 2) %>%
+lapply(cahsd_descr, round, 2) %>%
   lapply(function(x) x[ 1:7, 1:4])
 
 # récupération de la variable de classe
@@ -110,9 +112,12 @@ ggplot2::ggsave(out_path, plot, width = 10, height = 10)
 # CAH
 cahv <- FactoMineR::HCPC(acpv, metric = "euclidean", method = "ward",
                          graph = FALSE)
+
+# extraction des clusters
+cahv_descr <- FactoMineR::catdes(cahv$data.clust, num.var = 17)$quanti
+
 # description de la CAH
-FactoMineR::catdes(cahv$data.clust, num.var = 17)$quanti %>%
-  lapply(round, 2) %>%
+lapply(cahv_descr, round, 2) %>%
   lapply(function(x) x[ 1:7, 1:4])
 
 # récupération de la variable de classe
@@ -167,24 +172,21 @@ readr::write_tsv(bv_results, out_path)
 
 # visualisation -----------------------------------------------------------
 
-cluster_sd <- FactoMineR::catdes(cahsd$data.clust, num.var = 28)$quanti %>%
-  lapply(rownames) %>%
+# mise en avant des 6 premières variables socio-démographiques
+clusters_sd <- lapply(cahsd_descr, rownames) %>%
   lapply(head, 6) %>%
   sapply(str_c, collapse = ", ")
-  # sapply(function(x) str_c(str_c(x[1:3], collapse = ", "), ",\n",
-  #                          str_c(x[4:6], collapse = ", ")))
 
-cluster_v <- FactoMineR::catdes(cahv$data.clust, num.var = 17)$quanti %>%
-  lapply(rownames) %>%
+# mise en avant des 6 premiers résultats électoraux
+clusters_v <- lapply(cahv_descr, rownames) %>%
   lapply(head, 6) %>%
   sapply(str_c, collapse = ", ")
-  # sapply(function(x) str_c(str_c(x[1:3], collapse = ", "), ",\n",
-  #                          str_c(x[4:6], collapse = ", ")))
 
-bv_map <- readr::read_rds("sorties/contours-Lille-BV-2025.rds") %>%
+bv_map <- fs::path(s, str_c("contours-", nom_fichier_base, "-BV-2025.rds")) %>%
+  readr::read_rds() %>%
   dplyr::left_join(bv_results, by = c("codeBureauVote" = "BV")) %>%
-  dplyr::mutate(lbl_sd = str_c(classe_sd, " : ", cluster_sd[ classe_sd ]),
-                lbl_v = str_c(classe_v, " : ", cluster_v[ classe_v ]),
+  dplyr::mutate(lbl_sd = str_c(classe_sd, " : ", clusters_sd[ classe_sd ]),
+                lbl_v = str_c(classe_v, " : ", clusters_v[ classe_v ]),
                 numeroBureauVote = str_remove(numeroBureauVote, "^0+"))
 
 p1 <- ggplot(bv_map) +
@@ -200,7 +202,8 @@ p1 <- ggplot(bv_map) +
         legend.direction = "vertical",
         legend.key.spacing.y = unit(2, "mm"),
         legend.text = element_text(face = "bold", size = 12)) +
-  labs(title = "Classification par variables socio-démographiques",
+  labs(title = str_c("Classification des bureaux de ", nom_fichier_base,
+                     " par leur composition socio-démographique"),
        subtitle = "Base : données infracommunales Insee 2019")
 
 p2 <- ggplot(bv_map) +
@@ -216,7 +219,8 @@ p2 <- ggplot(bv_map) +
         legend.direction = "vertical",
         legend.key.spacing.y = unit(2, "mm"),
         legend.text = element_text(face = "bold", size = 12)) +
-  labs(title = "Classification par variables électorales",
+  labs(title = str_c("Classification des bureaux de ", nom_fichier_base,
+                     " par leurs résultats électoraux"),
        subtitle = "Base : élections présidentielle 2022 T1 et européennes 2024")
 
 # export
