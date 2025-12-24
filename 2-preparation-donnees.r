@@ -243,6 +243,7 @@ n <- fs::path(d, "resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
   readr::read_delim(delim = ";", n_max = 0,
                     locale = locale(encoding = "latin1"),
                     show_col_types = FALSE) %>%
+  names()
 
 # produce the repeated column names (will get 'repaired' just below)
 n <- c(n[ 1:21 ], rep(n[ 22:28 ], 12))
