@@ -23,8 +23,7 @@ Mostly notes to self:
 - most data saved in, and read from, zipped archives, to save disk space
 - edited column selection within Insee files to avoid a few duplicates
 - code rewritten in order to allow easier re-use with other cities
-
-The Insee-derived results are strictly identical. The elections-derived results are slightly different.
+- corrected a typo that created very slightly incorrect results (_bureau_ 901)
 
 [spReapportion]: https://github.com/joelgombin/spReapportion
 [sfReapportion]: https://github.com/briatte/sfReapportion
