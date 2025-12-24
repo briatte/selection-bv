@@ -17,28 +17,35 @@ library(factoextra)
 library(FactoMineR)
 library(tidyverse)
 
+# paramètres généraux -----------------------------------------------------
+
+nom_fichier_base <- "Lille"
+bureaux_a_exclure <- c("59350_0901") # bureau 901 = prisonniers
+
+# dossier-cible -----------------------------------------------------------
+
+s <- "sorties"
+stopifnot(fs::dir_exists(s))
+
 # chargement des bases ----------------------------------------------------
 
 # résultats électoraux
-base_elec <- readr::read_rds("sorties/Base-Lille-elec.rds") %>%
-  # suppression du bureau 901 (prisonniers)
-  dplyr::filter(!BV %in% "59350_0901") %>%
-  # requis pour que {FactoMineR} identifie les parangons
-  as.data.frame()
+base_elec <- fs::path(s, str_c("Base-", nom_fichier_base, "-elec.rds")) %>%
+  readr::read_rds() %>%
+  dplyr::filter(!BV %in% bureaux_a_exclure) %>%
+  as.data.frame() # requis pour que {FactoMineR} identifie les parangons
 row.names(base_elec) <- base_elec$BV
 
-# variables Insee
-base_soc <- readr::read_rds("sorties/Base-Lille-soc.rds") %>%
-  # suppression du bureau 901 (prisonniers)
-  dplyr::filter(!codeBureauVote %in% "59350_0901") %>%
-  # requis pour que {FactoMineR} identifie les parangons
-  as.data.frame()
+# variables Insee (note : le bureau à supprimer est déjà exclu)
+base_soc <- fs::path(s, str_c("Base-", nom_fichier_base, "-soc.rds")) %>%
+  readr::read_rds() %>%
+  as.data.frame() # requis pour que {FactoMineR} identifie les parangons
 row.names(base_soc) <- base_soc$codeBureauVote
 
 # base combinée
-base <- readr::read_rds("sorties/Base-Lille-finale.rds") %>%
-  # suppression du bureau 901 (prisonniers)
-  dplyr::filter(!BV %in% "59350_0901")
+base <- fs::path(s, str_c("Base-", nom_fichier_base, "-finale.rds")) %>%
+  readr::read_rds() %>%
+  dplyr::filter(!BV %in% bureaux_a_exclure)
 
 # ACP et classification à partir des variables socioéconomiques -----------
 
@@ -51,11 +58,14 @@ head(acpsd$eig)     # inertie décrite par chaque axe
 head(acpsd$var$cor) # corrélation des variables aux axes
 
 # représentation graphique
-factoextra::fviz_pca_var(acpsd, repel = TRUE) +
+plot <- factoextra::fviz_pca_var(acpsd, repel = TRUE) +
   labs(title = "ACP : variables socio-démographiques") +
   theme_minimal()
 
-ggsave("sorties/Exemple - ACP SD Lille MINE.pdf", width = 10, height = 10)
+# export
+out_path <- fs::path(s, str_c("resultats-ACP-", nom_fichier_base, "-SD.pdf"))
+message("Graphique ACP socio-démo. exporté vers ", out_path)
+ggplot2::ggsave(out_path, plot, width = 10, height = 10)
 
 # CAH
 cahsd <- FactoMineR::HCPC(acpsd, metric = "euclidean", method = "ward",
@@ -86,11 +96,14 @@ head(acpv$eig)
 head(acpv$var$coord)
 
 # représentation graphique
-factoextra::fviz_pca_var(acpv, repel = TRUE) +
+plot <- factoextra::fviz_pca_var(acpv, repel = TRUE) +
   labs(title = "ACP : variables électorales") +
   theme_minimal()
 
-ggsave("sorties/Exemple - ACP Votes Lille MINE.pdf", width = 10, height = 10)
+# export
+out_path <- fs::path(s, str_c("resultats-ACP-", nom_fichier_base, "-votes.pdf"))
+message("Graphique ACP votes exporté vers ", out_path)
+ggplot2::ggsave(out_path, plot, width = 10, height = 10)
 
 # CAH
 cahv <- FactoMineR::HCPC(acpv, metric = "euclidean", method = "ward",
@@ -123,18 +136,21 @@ parangons_v <- as.vector(sapply(cahv$desc.ind$para, names))
 # extraction des parangons de la CAH sur variables socio-démographiques
 parangons_sd <- as.vector(sapply(cahsd$desc.ind$para, names))
 
-# examen des parangons (meilleurs bureaux tout en haut)
-dplyr::select(base, BV, classe_v, classe_sd) %>%
-  mutate(parangon_sd = as.integer(BV %in% parangons_sd),
-         parangon_v  = as.integer(BV %in% parangons_v),
-         score = parangon_sd + parangon_v) %>%
-  filter(score > 0) %>%
-  arrange(-score) %>%
-  print(n = Inf)
+# assemblage des résultats
+bv_results <- dplyr::select(base, BV, classe_v, classe_sd) %>%
+  dplyr::mutate(parangon_sd = as.integer(BV %in% parangons_sd),
+                parangon_v  = as.integer(BV %in% parangons_v),
+                score = parangon_sd + parangon_v) %>%
+  dplyr::arrange(-score) %>%
+  dplyr::left_join(dplyr::select(base, -classe_v, -classe_sd), by = "BV")
 
-# examen des classes de chaque BV
-dplyr::select(base, BV, classe_v, classe_sd) %>%
-  print(n = Inf)
+# examen des parangons (meilleurs bureaux en premier)
+print(arrange(filter(bv_results, score > 0), -score), n = Inf)
+
+# export
+out_path <- fs::path(s, str_c("resultats-BV-", nom_fichier_base, ".tsv"))
+message("Résultats exportés vers ", out_path)
+readr::write_tsv(bv_results, out_path)
 
 ## À partir d'une liste des adresses des bureaux, on essaye de trouver :
 #
