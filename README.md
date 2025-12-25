@@ -97,4 +97,5 @@ Reach me at `f.briatte at gmail dot com` if need be, or [open an issue](https://
 ## Credits
 
 - [Tristan Haute](https://pro.univ-lille.fr/tristan-haute) wrote most of the code
-- [Joël Gombin](https://open.datactivist.coop/authors/joel-gombin) wrote [`spReapportion`][spReapportion] and [fought hard](https://github.com/Denis-Vannier/bureaux-de-vote-2022?tab=readme-ov-file#avant-lopen-data) to get the [REU](https://www.data.gouv.fr/datasets/bureaux-de-vote-et-adresses-de-leurs-electeurs) released, which is how we ended up getting shapefiles for polling stations
+- [Joël Gombin](https://open.datactivist.coop/authors/joel-gombin) wrote [`spReapportion`][spReapportion] and [fought hard](https://github.com/Denis-Vannier/bureaux-de-vote-2022?tab=readme-ov-file#avant-lopen-data) to get the [REU](https://www.data.gouv.fr/datasets/bureaux-de-vote-et-adresses-de-leurs-electeurs) released, which is kind of how we ended up getting (approximate) shapefiles for French polling stations
+- the [French Ministry of the Interior](https://www.interieur.gouv.fr/), for finding so many ways to make their electoral results hard to parse
