@@ -47,8 +47,9 @@ The code has a few less package dependencies (although it does import the entire
 ## Data sources
 
 - Etalab, [Proposition de contours des bureaux de vote][contours-bv], 2023
-  - see [this blog post][contours-bv-insee]
+  - see also [this blog post][contours-bv-insee]
   - see also the [`mapvotr`][mapvotr] package
+  - see also this [alternative dataset][cedricr] ([details][issue3])
 - IGN/Insee, [Contours... IRIS®][contours-iris], 2019
 - Insee, Recensement de la population - Base infracommunale (IRIS), 2019
   - [Activité des résidents][actifs]
@@ -59,6 +60,8 @@ The code has a few less package dependencies (although it does import the entire
 - Ministère de l'Intérieur, [Résultats des élections européennes du 9 juin 2024][eur24]
 - Ministère de l'Intérieur, [Election présidentielle des 10 et 24 avril 2022 - Résultats définitifs du 1er tour][prt122]
 
+[cedricr]: https://www.data.gouv.fr/datasets/proposition-de-contours-des-bureaux-de-vote-selon-la-methode-de-linsee
+[issue3]: https://github.com/briatte/selection-bv/issues/3
 [contours-bv]: https://www.data.gouv.fr/datasets/proposition-de-contours-des-bureaux-de-vote/
 [contours-bv-insee]: https://blog.insee.fr/a-vote-a-chaque-bureau-de-vote-ses-electeurs/
 [mapvotr]: https://inseefrlab.github.io/mapvotr/
