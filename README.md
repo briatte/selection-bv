@@ -9,24 +9,23 @@ Processed datasets and final results will be saved into `sorties`, including a s
 ![](sorties/resultats-CAH-Lille.png)
 ![](sorties/resultats-CAH-Grenoble-voronoi.png)
 
-The last map above uses [Voronoi-based polygons](https://blog.insee.fr/a-vote-a-chaque-bureau-de-vote-ses-electeurs/) for the bureaux de vote of the city of Grenoble, but since there are [official shapefiles](https://data.metropolegrenoble.fr/visualisation/information/?id=les-bureaux-de-vote) for these, let's use that:
+Both maps above use [Voronoi-based polygons](https://blog.insee.fr/a-vote-a-chaque-bureau-de-vote-ses-electeurs/) to plot the _bureaux de vote_, but since the city of Grenoble releases [official shapefiles](https://data.metropolegrenoble.fr/visualisation/information/?id=les-bureaux-de-vote) for these, let's use that instead:
 
 ```r
-"~/Downloads/decoupage_bureau_vote_epsg4326/" %>% 
-  sf::st_read() %>% 
+sf::st_read("decoupage_bureau_vote_epsg4326/") %>% 
   dplyr::mutate(numeroBureauVote = str_pad(dec_bure_1, width = 4, 
                                     side = "left", pad = "0"),
                 codeBureauVote = str_c("38185", numeroBureauVote, sep = "_")) %>% 
   readr::write_rds("sorties/contours-Grenoble-BV-2025.rds")
 ```
 
-Let's now run scripts 2 and 3 with `code_insee_cible` set to `38185`, `nom_fichier_base` set to `Grenoble`, also adjusting map height to `12`:
+Let's now run scripts 2 and 3 with `code_insee_cible` set to `"38185"`, `nom_fichier_base` set to `"Grenoble"`, and map height set to `12`:
 
 ![](sorties/resultats-CAH-Grenoble-officiels.png)
 
 The alpha and fill overlays say something of the instability of the _bureaux de vote_, some of which were suppressed in recent years ([details](https://github.com/briatte/selection-bv/issues/1)). The scripts cannot make up for that and will only throw some warnings if they detect related issues.
 
-## Changes from Tristan's code
+## Changes to Tristan's code
 
 Mostly notes to self:
 
@@ -39,7 +38,7 @@ Mostly notes to self:
 - corrected a typo that created very slightly incorrect results (_bureau_ 901)
 - visualization of the final results
 
-The code has a few less package dependencies (although it does import the entire [tidyverse][tidyverse], so there's that), and works without having to install some retired packages that were required by [`spReapportion`][spReapportion]. It also downloads slightly less Insee data.
+The code has a few less package dependencies (although it does import the entire [`tidyverse`][tidyverse], so there's that), and works without having to install some retired packages that were required by [`spReapportion`][spReapportion]. It also downloads slightly less data from Insee.
 
 [spReapportion]: https://github.com/joelgombin/spReapportion
 [sfReapportion]: https://github.com/briatte/sfReapportion
@@ -47,10 +46,10 @@ The code has a few less package dependencies (although it does import the entire
 
 ## Data sources
 
-- Insee, [Proposition de contours des bureaux de vote][contours-bv], 2023
+- Etalab, [Proposition de contours des bureaux de vote][contours-bv], 2023
   - see [this blog post][contours-bv-insee]
   - see also the [`mapvotr`][mapvotr] package
-- Insee, [Contours... IRIS®][contours-iris], 2019
+- IGN/Insee, [Contours... IRIS®][contours-iris], 2019
 - Insee, Recensement de la population - Base infracommunale (IRIS), 2019
   - [Activité des résidents][actifs]
   - [Population][population]
@@ -74,7 +73,7 @@ The code has a few less package dependencies (although it does import the entire
 
 ## Package dependencies
 
-All from CRAN except noted otherwise:
+All available from CRAN unless noted otherwise:
 
 - `archive` (to deal with `.7z`)
 - `factoextra`
@@ -82,7 +81,7 @@ All from CRAN except noted otherwise:
 - `patchwork`
 - `remotes` (to install [`sfReapportion`][sfReapportion] from GitHub)
 - `sf`
-- [`sfReapportion`][sfReapportion] (from GitHub)
+- [`sfReapportion`][sfReapportion] (only available on GitHub)
 - `tidyverse`
 
 [pca]: http://factominer.free.fr/factomethods/analyse-en-composantes-principales.html
