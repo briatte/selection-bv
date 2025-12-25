@@ -90,4 +90,4 @@ All from CRAN except noted otherwise:
 
 ## Questions
 
-Reach me at `f.briatte at gmail dot com` if need be :)
+Reach me at `f.briatte at gmail dot com` if need be, or [open an issue](https://github.com/briatte/selection-bv/issues) (English or French).
