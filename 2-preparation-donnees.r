@@ -36,7 +36,7 @@ fs::dir_create(s)
 # contours BV -------------------------------------------------------------
 
 # speed up things by checking for pre-existing output
-out_path <- fs::path(s, str_c("contours-", nom_fichier_base, "-BV-2025.rds"))
+out_path <- fs::path(s, str_c("contours-", nom_fichier_base, "-BV.rds"))
 if (!fs::file_exists(out_path)) {
 
   bv_fdc <- fs::path(d, "contours-france-entiere-latest-v2.geojson") %>%
@@ -45,7 +45,7 @@ if (!fs::file_exists(out_path)) {
     dplyr::filter(codeCommune %in% code_insee_cible)
 
   # export
-  message(str_c("Contours BV 2025 exportés vers ", out_path))
+  message(str_c("Contours BV exportés vers ", out_path))
   readr::write_rds(bv_fdc, out_path)
 
 }

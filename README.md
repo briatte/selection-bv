@@ -16,7 +16,7 @@ sf::st_read("decoupage_bureau_vote_epsg4326/") %>%
   dplyr::mutate(numeroBureauVote = str_pad(dec_bure_1, width = 4, 
                                     side = "left", pad = "0"),
                 codeBureauVote = str_c("38185", numeroBureauVote, sep = "_")) %>% 
-  readr::write_rds("sorties/contours-Grenoble-BV-2025.rds")
+  readr::write_rds("sorties/contours-Grenoble-BV.rds")
 ```
 
 Let's now run scripts 2 and 3 with `code_insee_cible` set to `"38185"`, `nom_fichier_base` set to `"Grenoble"`, and map height set to `12`:

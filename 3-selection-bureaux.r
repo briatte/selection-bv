@@ -182,7 +182,7 @@ clusters_v <- lapply(cahv_descr, rownames) %>%
   lapply(head, 6) %>%
   sapply(str_c, collapse = ", ")
 
-bv_map <- fs::path(s, str_c("contours-", nom_fichier_base, "-BV-2025.rds")) %>%
+bv_map <- fs::path(s, str_c("contours-", nom_fichier_base, "-BV.rds")) %>%
   readr::read_rds() %>%
   dplyr::left_join(bv_results, by = c("codeBureauVote" = "BV")) %>%
   dplyr::mutate(lbl_sd = str_c(classe_sd, " : ", clusters_sd[ classe_sd ]),
