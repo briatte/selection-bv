@@ -39,10 +39,11 @@ Mostly notes to self:
 - corrected a typo that created very slightly incorrect results (_bureau_ 901)
 - visualization of the final results
 
-The code has less package dependencies and works without having to install some retired packages that were required by [`spReapportion`][spReapportion].
+The code has a few less package dependencies (although it does import the entire [tidyverse][tidyverse], so there's that), and works without having to install some retired packages that were required by [`spReapportion`][spReapportion]. It also downloads slightly less Insee data.
 
 [spReapportion]: https://github.com/joelgombin/spReapportion
 [sfReapportion]: https://github.com/briatte/sfReapportion
+[tidyverse]: https://tidyverse.org/
 
 ## Data sources
 
@@ -61,7 +62,7 @@ The code has less package dependencies and works without having to install some 
 
 [contours-bv]: https://www.data.gouv.fr/datasets/proposition-de-contours-des-bureaux-de-vote/
 [contours-bv-insee]: https://blog.insee.fr/a-vote-a-chaque-bureau-de-vote-ses-electeurs/
-[mapvotr]: 
+[mapvotr]: https://inseefrlab.github.io/mapvotr/
 [contours-iris]: https://geoservices.ign.fr/contoursiris
 [actifs]: https://www.insee.fr/fr/statistiques/6543289
 [population]: https://www.insee.fr/fr/statistiques/6543200
@@ -77,12 +78,15 @@ All from CRAN except noted otherwise:
 
 - `archive` (to deal with `.7z`)
 - `factoextra`
-- `FactoMineR`
+- `FactoMineR` (for [PCA][pca] and [HCPC][hcpc])
 - `patchwork`
 - `remotes` (to install [`sfReapportion`][sfReapportion] from GitHub)
 - `sf`
 - [`sfReapportion`][sfReapportion] (from GitHub)
 - `tidyverse`
+
+[pca]: http://factominer.free.fr/factomethods/analyse-en-composantes-principales.html
+[hcpc]: http://factominer.free.fr/factomethods/classification-hierarchique-sur-composantes-principales.html
 
 ## Questions
 
