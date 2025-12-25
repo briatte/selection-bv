@@ -271,7 +271,11 @@ pr <- fs::path(d, "resultats-par-niveau-burvot-t1-france-entiere.txt.zip") %>%
                    Jadot     = 100 * `Voix...82` / Inscrits) # Voix.8
 
 # sanity check
-stopifnot(identical(sort(eur$BV), sort(pr$BV)))
+if (!identical(sort(eur$BV), sort(pr$BV))) {
+  warning(length(setdiff(pr$BV, eur$BV)), " BV de 2022 non trouvés en 2024, ",
+          length(setdiff(eur$BV, pr$BV)), " BV de 2024 non trouvés en 2022 ;",
+          " les données manquantes seront imputées (et probablement fausses)")
+}
 
 # fusion des bases électorales
 base_elec <- dplyr::full_join(eur, pr, by = "BV")
