@@ -93,3 +93,8 @@ All available from CRAN unless noted otherwise:
 ## Questions
 
 Reach me at `f.briatte at gmail dot com` if need be, or [open an issue](https://github.com/briatte/selection-bv/issues) (English or French).
+
+## Credits
+
+- [Tristan Haute](https://pro.univ-lille.fr/tristan-haute) wrote most of the code
+- [Joël Gombin](https://open.datactivist.coop/authors/joel-gombin) wrote [`spReapportion`][spReapportion] and [fought hard](https://github.com/Denis-Vannier/bureaux-de-vote-2022?tab=readme-ov-file#avant-lopen-data) to get the [REU](https://www.data.gouv.fr/datasets/bureaux-de-vote-et-adresses-de-leurs-electeurs) released, which is how we ended up getting shapefiles for polling stations
