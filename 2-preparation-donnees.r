@@ -25,6 +25,13 @@ library(sfReapportion)
 code_insee_cible <- "59350"
 nom_fichier_base <- "Lille"
 
+# attention avec les villes avec arrondissements, il faut passer à la fois les
+# codes Insee des arrondissements et le code Insee de la ville ; par exemple,
+# pour Marseille, utiliser la séquence 13201, 13202, ..., 13216, pour les BV,
+# plus le code Insee de la ville, 13055, pour les IRIS :
+#
+# code_insee_cible <- c(str_c("132", str_pad(1:16, 2, pad = "0")), "13055")
+
 # dossiers-cibles ---------------------------------------------------------
 
 d <- "donnees"
