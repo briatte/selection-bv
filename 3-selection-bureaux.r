@@ -78,7 +78,7 @@ cahsd_descr <- FactoMineR::catdes(cahsd$data.clust, num.var = 28)$quanti
 
 # description de la CAH
 lapply(cahsd_descr, round, 2) %>%
-  lapply(function(x) x[ 1:7, 1:4])
+  lapply(function(x) head(x[, 1:4], 7))
 
 # récupération de la variable de classe
 base <- tibble(BV = base_soc$codeBureauVote,
@@ -118,7 +118,7 @@ cahv_descr <- FactoMineR::catdes(cahv$data.clust, num.var = 17)$quanti
 
 # description de la CAH
 lapply(cahv_descr, round, 2) %>%
-  lapply(function(x) x[ 1:7, 1:4])
+  lapply(function(x) head(x[, 1:4], 7))
 
 # récupération de la variable de classe
 base <- tibble(BV = base_elec$BV,
