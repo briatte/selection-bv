@@ -208,6 +208,33 @@ iris_base <- dplyr::full_join(actifs, population, by = "IRIS") %>%
 base_soc <- sfReapportion::sfReapportion(iris_fdc, bv_fdc, iris_base,
                                          "CODE_IRIS", "codeBureauVote", "IRIS")
 
+# --- optional: validate result against those of {areal}
+# --- uncomment to run, and install {areal} and {testthat} first
+#
+# library(areal)
+# library(testthat)
+#
+# # reproject to planar CRS (Lambert 93) and add variables
+# src <- sf::st_transform(iris_fdc, 2154) %>%
+#   dplyr::left_join(iris_base, by = c("CODE_IRIS" = "IRIS"))
+# src_vars <- names(iris_base)[ -1 ]
+# trg <- sf::st_transform(bv_fdc, 2154)
+#
+# stopifnot(areal::ar_validate(src, trg, varList = src_vars))
+# # areal::ar_validate(src, trg, varList = src_vars, verbose = TRUE)
+#
+# with_areal <- areal::aw_interpolate(trg, tid = "codeBureauVote",
+#                                     source = src, sid = "CODE_IRIS",
+#                                     extensive = src_vars,
+#                                     weight = "total", output = "tibble") %>%
+#   dplyr::select(codeBureauVote, dplyr::all_of(src_vars)) %>%
+#   dplyr::arrange(codeBureauVote) %>%
+#   as.data.frame()
+#
+# testthat::expect_equal(base_soc, with_areal, tolerance = 1e-4)
+
+# --- validation over
+
 # mise en % des variables socioéconomiques
 base_soc <- base_soc %>%
   dplyr::transmute(codeBureauVote,
