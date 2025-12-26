@@ -1,8 +1,8 @@
 #
-# Téléchargement de toutes les données requises par
+# Analyse des données téléchargées puis préparées par
 #
+#   1-telechargement-donnees.r
 #   2-preparation-donnees.r
-#   3-selection-bureaux.r
 #
 
 # packages ----------------------------------------------------------------
@@ -52,7 +52,7 @@ base <- fs::path(s, str_c("Base-", nom_fichier_base, "-finale.rds")) %>%
 # ACP et classification à partir des variables socio-démographiques -------
 
 # ACP
-acpsd <- select(base_soc, -codeBureauVote, -Population) %>%
+acpsd <- dplyr::select(base_soc, -codeBureauVote, -Population) %>%
   FactoMineR::PCA(graph = FALSE)
 
 # métriques
@@ -92,7 +92,7 @@ dplyr::count(base, classe_sd) %>%
 # ACP et classification à partir des variables électorales ----------------
 
 # ACP (excl. BV, Inscrits_e, Inscrits_p)
-acpv <- select(base_elec, -BV, -starts_with("Inscrits")) %>%
+acpv <- dplyr::select(base_elec, -BV, -starts_with("Inscrits")) %>%
   FactoMineR::PCA(graph = FALSE)
 
 # métriques de l'ACP
@@ -152,7 +152,7 @@ bv_results <- dplyr::select(base, BV, classe_v, classe_sd) %>%
   dplyr::left_join(dplyr::select(base, -classe_v, -classe_sd), by = "BV")
 
 # examen des parangons (meilleurs bureaux en premier)
-arrange(filter(bv_results, score > 0), -score)
+dplyr::arrange(dplyr::filter(bv_results, score > 0), -score)
 
 # export
 out_path <- fs::path(s, str_c("resultats-BV-", nom_fichier_base, ".tsv"))
