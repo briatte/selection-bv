@@ -152,7 +152,7 @@ bv_results <- dplyr::select(base, BV, classe_v, classe_sd) %>%
   dplyr::left_join(dplyr::select(base, -classe_v, -classe_sd), by = "BV")
 
 # examen des parangons (meilleurs bureaux en premier)
-print(arrange(filter(bv_results, score > 0), -score), n = Inf)
+arrange(filter(bv_results, score > 0), -score)
 
 # export
 out_path <- fs::path(s, str_c("resultats-BV-", nom_fichier_base, ".tsv"))
@@ -226,6 +226,7 @@ p2 <- ggplot(bv_map) +
 # export
 out_path <- fs::path(s, str_c("resultats-CAH-", nom_fichier_base, ".png"))
 message("Carte des clusters CAH exportée vers ", out_path)
+# Lille: height = 8, Grenoble: height = 11, Bordeaux / Marseille: height = 13.5
 ggplot2::ggsave(out_path, p1 + p2, width = 16, height = 8)
 
 # kthxbye
