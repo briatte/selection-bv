@@ -36,10 +36,12 @@ Mostly notes to self:
 - code rewritten in order to allow easier re-use with other cities
 - edited column selection within Insee files to avoid a few duplicates
 - corrected a typo that created very slightly incorrect results (_bureau_ 901)
+- code to match results of reapportionment with [`areal`][areal]
 - visualization of the final results
 
 The code has a few less package dependencies (although it does import the entire [`tidyverse`][tidyverse], so there's that), and works without having to install some retired packages that were required by [`spReapportion`][spReapportion]. It also downloads slightly less data from Insee.
 
+[areal]: https://cran.r-project.org/package=areal
 [spReapportion]: https://github.com/joelgombin/spReapportion
 [sfReapportion]: https://github.com/briatte/sfReapportion
 [tidyverse]: https://tidyverse.org/
