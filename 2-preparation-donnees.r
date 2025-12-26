@@ -42,8 +42,13 @@ if (!fs::file_exists(out_path)) {
   bv_fdc <- fs::path(d, "contours-france-entiere-latest-v2.geojson") %>%
     sf::st_read() %>%
     # Lille: subset from 68806 to 126 features
-    dplyr::filter(codeCommune %in% code_insee_cible)
+    dplyr::filter(codeCommune %in% code_insee_cible) %>%
     sf::st_transform(crs = 2154) # Lambert 93
+
+  if (!nrow(bv_fdc)) {
+    stop("Aucun contour BV avec le(s) code(s) Insee ",
+         str_flatten_comma(code_insee_cible), ".")
+  }
 
   # export
   message(str_c("Contours BV exportés vers ", out_path))
@@ -51,6 +56,8 @@ if (!fs::file_exists(out_path)) {
 
 }
 bv_fdc <- readr::read_rds(out_path)
+
+message(nom_fichier_base, " : ", nrow(bv_fdc), " bureaux")
 
 # contours IRIS 2019 ------------------------------------------------------
 
@@ -68,12 +75,19 @@ if (!fs::file_exists(out_path)) {
     dplyr::filter(INSEE_COM %in% code_insee_cible) %>%
     sf::st_transform(crs = 2154) # Lambert 93
 
+  if (!nrow(iris_fdc)) {
+    stop("Aucun contour IRIS avec le(s) code(s) Insee ",
+         str_flatten_comma(code_insee_cible), ".")
+  }
+
   # export
   message(str_c("Contours IRIS 2019 exportés vers ", out_path))
   readr::write_rds(iris_fdc, out_path)
 
 }
 iris_fdc <- readr::read_rds(out_path)
+
+message(nom_fichier_base, " : ", nrow(iris_fdc), " IRIS")
 
 # Insee : actifs 2019 -----------------------------------------------------
 
