@@ -43,6 +43,7 @@ if (!fs::file_exists(out_path)) {
     sf::st_read() %>%
     # Lille: subset from 68806 to 126 features
     dplyr::filter(codeCommune %in% code_insee_cible)
+    sf::st_transform(crs = 2154) # Lambert 93
 
   # export
   message(str_c("Contours BV exportés vers ", out_path))
@@ -65,7 +66,7 @@ if (!fs::file_exists(out_path)) {
     sf::st_read() %>%
     # Lille: subset from 48590 to 110 features
     dplyr::filter(INSEE_COM %in% code_insee_cible) %>%
-    sf::st_transform(crs = "WGS84")
+    sf::st_transform(crs = 2154) # Lambert 93
 
   # export
   message(str_c("Contours IRIS 2019 exportés vers ", out_path))
