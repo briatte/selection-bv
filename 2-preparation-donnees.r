@@ -31,6 +31,11 @@ nom_fichier_base <- "Lille"
 # plus le code Insee de la ville, 13055, pour les IRIS :
 #
 # code_insee_cible <- c(str_c("132", str_pad(1:16, 2, pad = "0")), "13055")
+#
+# Pour Paris (900 BV en 2022, 902 en 2024, 897 dans l'approximation Etalab), on
+# inverse, 75101, 75102, ..., 75120 pour les IRIS, 75056 pour les BV :
+#
+# code_insee_cible <- c(str_c("751", str_pad(1:20, 2, pad = "0")), "75056")
 
 # dossiers-cibles ---------------------------------------------------------
 
