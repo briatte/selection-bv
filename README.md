@@ -1,10 +1,12 @@
+R code to help with identifying representative voting districts (_bureaux de vote_) in French cities, using socio-demographic data and past electoral results.
+
 ## HOWTO
 
 1. Run `1-telechargement-donnees.r` to save all required datasets to `donnees`.
 2. Run `2-preparation-donnees.r` to process all datasets.
 3. Run `3-selection-bureaux.r` to get the _bureaux_ classified.
 
-Processed datasets and final results will be saved into `sorties`, including a summary map of the top 5 representative clusters in each class:
+Processed datasets and final results will be saved into `sorties`, including a summary map of the top 5 representative _bureaux_ in each class:
 
 ![](sorties/resultats-CAH-Lille.png)
 ![](sorties/resultats-CAH-Grenoble-voronoi.png)
